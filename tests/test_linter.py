@@ -1,11 +1,12 @@
 """
 Test Linter
 """
-import unittest
 import os
+import unittest
 
 from polib import POEntry
-from polint import ValidatorRegister, Linter
+
+from polint import Linter, ValidatorRegister
 
 
 def invalidator(dummy):

@@ -4,7 +4,8 @@ Tests for individual validators.
 import unittest
 
 from polib import POEntry
-from polint import fuzzy_validator, obsolete_validator, untranslated_validator, no_location_validator
+
+from polint import fuzzy_validator, no_location_validator, obsolete_validator, untranslated_validator
 
 
 class TestFuzzyValidator(unittest.TestCase):

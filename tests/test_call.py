@@ -1,8 +1,8 @@
 """
 Test command calls.
 """
-import unittest
 import os
+import unittest
 from cStringIO import StringIO
 
 from polint import main
