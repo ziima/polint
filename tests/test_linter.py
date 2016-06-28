@@ -42,29 +42,3 @@ class TestLinter(unittest.TestCase):
 
         entry = POEntry(msgid="Source", msgstr="Translation")
         self.assertEqual(linter.errors, {entry: ['error']})
-
-
-class TestRunValidators(unittest.TestCase):
-    """
-    Test `Linter.run_validators` class with default register
-    """
-    def test_empty(self):
-        linter = Linter(os.path.join(os.path.dirname(__file__), 'data', 'empty.po'))
-
-        linter.run_validators()
-
-        self.assertEqual(linter.errors, {})
-
-    def test_header_only(self):
-        linter = Linter(os.path.join(os.path.dirname(__file__), 'data', 'header_only.po'))
-
-        linter.run_validators()
-
-        self.assertEqual(linter.errors, {})
-
-    def test_simple_valid(self):
-        linter = Linter(os.path.join(os.path.dirname(__file__), 'data', 'simple_valid.po'))
-
-        linter.run_validators()
-
-        self.assertEqual(linter.errors, {})

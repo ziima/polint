@@ -3,6 +3,7 @@ polint - Linter for gettext PO files
 """
 import argparse
 import sys
+from collections import OrderedDict
 
 import polib
 
@@ -15,9 +16,9 @@ class ValidatorRegister(object):
     """
     def __init__(self):
         # Dictionary of (code, description) pairs
-        self._errors = {}
+        self._errors = OrderedDict()
         # Dictionary of (code, callback) pairs
-        self._validators = {}
+        self._validators = OrderedDict()
 
     @property
     def errors(self):
@@ -76,7 +77,7 @@ class Linter(object):
         """
         self.pofile = pofile
         self.register = register
-        self.errors = {}
+        self.errors = OrderedDict()
 
     def run_validators(self):
         """
@@ -129,12 +130,12 @@ def get_parser():
 MSG_FORMAT = '%(filename)s:%(line)s: [%(error)s] %(description)s\n'
 
 
-def main():
+def main(args=None, output=sys.stdout):
     parser = get_parser()
-    args = parser.parse_args()
+    options = parser.parse_args(args)
 
     exit_code = 0
-    for filename in args.filenames:
+    for filename in options.filenames:
         linter = Linter(filename)
         linter.run_validators()
         if linter.errors:
@@ -144,9 +145,9 @@ def main():
             for error in errors:
                 msg_data = {'filename': filename, 'line': entry.linenum, 'error': error,
                             'description': error_defs[error]}
-                sys.stdout.write(MSG_FORMAT % msg_data)
-            if args.show_msg:
-                sys.stdout.write(str(entry))
+                output.write(MSG_FORMAT % msg_data)
+            if options.show_msg:
+                output.write(str(entry))
     sys.exit(exit_code)
 
 
