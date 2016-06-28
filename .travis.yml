@@ -11,4 +11,4 @@ install:
 script:
   - make check-isort
   - make check-flake8
-  - make test
+  - python setup.py test

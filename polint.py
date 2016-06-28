@@ -8,6 +8,9 @@ from collections import OrderedDict
 import polib
 
 
+__version__ = 'devel'
+
+
 ################################################################################
 # Validators register
 class ValidatorRegister(object):
