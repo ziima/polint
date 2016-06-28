@@ -9,5 +9,8 @@ polint.py [options] file [file ...]
 To print complete usage use `--help` option.
 
 
-## Validators ##
- * `fuzzy` - Validates there are no fuzzy translations
+## Errors ##
+ * `fuzzy` - Translation is fuzzy
+ * `obsolete` - Entry is obsolete
+ * `untranslated` - Translation is missing. That includes `fuzzy` or `obsolete`.
+ * `location` - Entry contains location data

@@ -99,6 +99,24 @@ def fuzzy_validator(entry):
 REGISTER.register(fuzzy_validator, 'fuzzy', 'translation is fuzzy')
 
 
+def obsolete_validator(entry):
+    """Checks if entry is obsolete"""
+    return not entry.obsolete
+REGISTER.register(obsolete_validator, 'obsolete', 'entry is obsolete')
+
+
+def untranslated_validator(entry):
+    """Checks if entry is translated"""
+    return entry.translated()
+REGISTER.register(untranslated_validator, 'untranslated', 'translation is missing')
+
+
+def no_location_validator(entry):
+    """Checks if entry has no location data"""
+    return not entry.occurrences
+REGISTER.register(no_location_validator, 'location', 'entry contains location')
+
+
 ################################################################################
 # Polint command
 def get_parser():
@@ -127,8 +145,8 @@ def main():
                 msg_data = {'filename': filename, 'line': entry.linenum, 'error': error,
                             'description': error_defs[error]}
                 sys.stdout.write(MSG_FORMAT % msg_data)
-                if args.show_msg:
-                    sys.stdout.write(str(entry))
+            if args.show_msg:
+                sys.stdout.write(str(entry))
     sys.exit(exit_code)
 
 
