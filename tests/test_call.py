@@ -55,3 +55,47 @@ class TestMain(unittest.TestCase):
                           'msgid "Location"\n' \
                           'msgstr "Location"\n'
         self.assertIn(location_output, output.getvalue())
+
+    def test_ignore_unknown(self):
+        # Ignore unknown error
+        output = StringIO()
+        with self.assertRaises(SystemExit) as context:
+            main([os.path.join(os.path.dirname(__file__), 'data', 'invalid.po'), '--ignore', 'unknown'], output=output)
+        self.assertEqual(context.exception.code, 1)
+        self.assertIn('invalid.po:13: [fuzzy] translation is fuzzy\n', output.getvalue())
+        self.assertIn('invalid.po:13: [untranslated] translation is missing\n', output.getvalue())
+        self.assertIn('invalid.po:17: [obsolete] entry is obsolete\n', output.getvalue())
+        self.assertIn('invalid.po:17: [untranslated] translation is missing\n', output.getvalue())
+        self.assertIn('invalid.po:20: [untranslated] translation is missing\n', output.getvalue())
+        self.assertIn('invalid.po:23: [location] entry contains location\n', output.getvalue())
+
+    def test_ignore_untranslated(self):
+        output = StringIO()
+        with self.assertRaises(SystemExit) as context:
+            main([os.path.join(os.path.dirname(__file__), 'data', 'invalid.po'), '--ignore', 'untranslated'],
+                 output=output)
+        self.assertEqual(context.exception.code, 1)
+        self.assertIn('invalid.po:13: [fuzzy] translation is fuzzy\n', output.getvalue())
+        self.assertIn('invalid.po:17: [obsolete] entry is obsolete\n', output.getvalue())
+        self.assertNotIn(': [untranslated] ', output.getvalue())
+
+    def test_ignore_multiple(self):
+        # Ignore multiple errors
+        output = StringIO()
+        with self.assertRaises(SystemExit) as context:
+            main([os.path.join(os.path.dirname(__file__), 'data', 'invalid.po'), '--ignore', 'untranslated,location'],
+                 output=output)
+        self.assertEqual(context.exception.code, 1)
+        self.assertIn('invalid.po:13: [fuzzy] translation is fuzzy\n', output.getvalue())
+        self.assertIn('invalid.po:17: [obsolete] entry is obsolete\n', output.getvalue())
+        self.assertNotIn(': [untranslated] ', output.getvalue())
+        self.assertNotIn(': [location] ', output.getvalue())
+
+    def test_ignore_all(self):
+        # Ignore multiple errors
+        output = StringIO()
+        with self.assertRaises(SystemExit) as context:
+            cmd = [os.path.join(os.path.dirname(__file__), 'data', 'invalid.po'), '--ignore',
+                   'untranslated,location,fuzzy,obsolete']
+            main(cmd, output=output)
+        self.assertEqual(context.exception.code, 0)

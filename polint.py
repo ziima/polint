@@ -69,25 +69,29 @@ class Linter(object):
     @ivar errors: Dictionary of (entry, errors) pairs found in validation
     @type errors: {POEntry: [text, text, ...], ...}
     """
-    def __init__(self, pofile, register=REGISTER):
+    def __init__(self, pofile, exclude=None, register=REGISTER):
         """
         Initializes Linter
 
         @param pofile: Filename or a file to be validated
         @type pofile: text or file
+        @param exclude: Set of validators to exclude
+        @type exclude: Set of strings
         @param register: Validator register to be used
         @type register: ValidatorRegister
         """
         self.pofile = pofile
         self.register = register
+        self.exclude = exclude or set()
         self.errors = OrderedDict()
 
     def run_validators(self):
         """
         Runs the checks
         """
+        validators = tuple((code, v) for code, v in self.register.validators.iteritems() if code not in self.exclude)
         for entry in polib.pofile(self.pofile):
-            for code, callback in self.register.validators.iteritems():
+            for code, callback in validators:
                 if not callback(entry):
                     entry_errors = self.errors.setdefault(entry, [])
                     entry_errors.append(code)
@@ -127,6 +131,7 @@ def get_parser():
     parser = argparse.ArgumentParser(description="Validates PO files")
     parser.add_argument('filenames', metavar='file', nargs='+', help='PO file to be linted')
     parser.add_argument('--show-msg', action="store_true", help="Print the message for each error")
+    parser.add_argument('--ignore', default='', help="skip errors (e.g. untranslated,location)")
     return parser
 
 
@@ -138,8 +143,9 @@ def main(args=None, output=sys.stdout):
     options = parser.parse_args(args)
 
     exit_code = 0
+    exclude = {i for i in options.ignore.split(',')}
     for filename in options.filenames:
-        linter = Linter(filename)
+        linter = Linter(filename, exclude=exclude)
         linter.run_validators()
         if linter.errors:
             exit_code = 1
