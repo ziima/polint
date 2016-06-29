@@ -95,7 +95,7 @@ class Linter(object):
         """
         Runs the checks
         """
-        entry_validators = tuple((code, v) for code, v in self.register.entry_validators.iteritems()
+        entry_validators = tuple((code, v) for code, v in self.register.entry_validators.items()
                                  if code not in self.exclude)
         for entry in polib.pofile(self.pofile):
             for code, callback in entry_validators:
@@ -157,7 +157,7 @@ def main(args=None, output=sys.stdout):
         if linter.errors:
             exit_code = 1
         error_defs = REGISTER.errors
-        for entry, errors in linter.errors.iteritems():
+        for entry, errors in linter.errors.items():
             for error in errors:
                 msg_data = {'filename': filename, 'line': entry.linenum, 'error': error,
                             'description': error_defs[error]}

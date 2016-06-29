@@ -3,9 +3,15 @@ Test command calls.
 """
 import os
 import unittest
-from cStringIO import StringIO
 
 from polint import main
+
+try:
+    # Python 2
+    from cStringIO import StringIO
+except ImportError:
+    # Python 3
+    from io import StringIO
 
 
 class TestMain(unittest.TestCase):
