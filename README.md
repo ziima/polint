@@ -1,5 +1,7 @@
 # polint - Linter for gettext PO files #
 
+[![Build Status](https://travis-ci.org/ziima/polint.svg?branch=master)](https://travis-ci.org/ziima/polint)
+
 `polint` is a tool which validates PO files against defined convensions
 
 ## Usage ##
