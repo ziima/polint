@@ -36,7 +36,7 @@ class TestLinter(unittest.TestCase):
 
     def test_run_validators(self):
         reg = ValidatorRegister()
-        reg.register(invalidator, 'error', 'entry in invalid')
+        reg.register_entry(invalidator, 'error', 'entry in invalid')
         linter = Linter(os.path.join(os.path.dirname(__file__), 'data', 'simple_valid.po'), register=reg)
 
         linter.run_validators()
@@ -46,7 +46,7 @@ class TestLinter(unittest.TestCase):
 
     def test_exclude(self):
         reg = ValidatorRegister()
-        reg.register(invalidator, 'error', 'entry in invalid')
+        reg.register_entry(invalidator, 'error', 'entry in invalid')
         linter = Linter(os.path.join(os.path.dirname(__file__), 'data', 'simple_valid.po'), exclude={'error'},
                         register=reg)
 
