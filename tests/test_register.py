@@ -22,12 +22,23 @@ class TestValidatorRegister(unittest.TestCase):
 
     def test_register(self):
         reg = ValidatorRegister()
-        reg.register_entry(test_callback, 'error', 'entry is invalid')
-        self.assertEqual(reg.errors, {'error': 'entry is invalid'})
-        self.assertEqual(reg.entry_validators, {'error': test_callback})
+        reg.register_entry(test_callback, 'entry', 'entry is invalid')
+        reg.register_file(test_callback, 'file', 'entry is invalid')
+
+        self.assertEqual(reg.errors, {'entry': 'entry is invalid', 'file': 'entry is invalid'})
+        self.assertEqual(reg.entry_validators, {'entry': test_callback})
+        self.assertEqual(reg.file_validators, {'file': test_callback})
 
     def test_already_registered(self):
         reg = ValidatorRegister()
-        reg.register_entry(test_callback, 'error', 'entry is invalid')
+        reg.register_entry(test_callback, 'entry', 'entry is invalid')
+        reg.register_file(test_callback, 'file', 'file is invalid')
+
         with self.assertRaises(ValueError):
-            reg.register_entry(test_callback, 'error', 'entry is broken')
+            reg.register_entry(test_callback, 'entry', 'it is broken')
+        with self.assertRaises(ValueError):
+            reg.register_entry(test_callback, 'file', 'it is broken')
+        with self.assertRaises(ValueError):
+            reg.register_file(test_callback, 'entry', 'it is broken')
+        with self.assertRaises(ValueError):
+            reg.register_file(test_callback, 'file', 'it is broken')

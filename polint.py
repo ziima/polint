@@ -20,8 +20,9 @@ class ValidatorRegister(object):
     def __init__(self):
         # Dictionary of (code, description) pairs
         self._errors = OrderedDict()
-        # Dictionary of (code, callback) pairs
+        # Dictionaries of (code, callback) pairs
         self._entry_validators = OrderedDict()
+        self._file_validators = OrderedDict()
 
     @property
     def errors(self):
@@ -41,6 +42,15 @@ class ValidatorRegister(object):
         """
         return self._entry_validators.copy()
 
+    @property
+    def file_validators(self):
+        """
+        Returns registered file validators.
+
+        @return: Dictionary of (error_code, callback) pairs.
+        """
+        return self._file_validators.copy()
+
     def register_entry(self, callback, error_code, error_description):
         """
         Registers entry validator.
@@ -59,6 +69,25 @@ class ValidatorRegister(object):
             raise ValueError('Validator for %s is already registered.' % error_code)
         self._errors[error_code] = error_description
         self._entry_validators[error_code] = callback
+
+    def register_file(self, callback, error_code, error_description):
+        """
+        Registers file validator.
+
+        Callback must match signature (POFile pofile).
+
+        @param callback: Function which performs validation.
+        @type callback: function
+        @param error_code: Error code which will be reported if validation fails.
+        @type error_code: text
+        @param error_description: Error description which will be reported if validation fails.
+        @type error_description: text
+        @raises ValueError: If `error_code` is already registered.
+        """
+        if error_code in self._errors:
+            raise ValueError('Validator for %s is already registered.' % error_code)
+        self._errors[error_code] = error_description
+        self._file_validators[error_code] = callback
 
 
 REGISTER = ValidatorRegister()
