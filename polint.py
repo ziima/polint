@@ -118,19 +118,30 @@ class Linter(object):
         self.pofile = pofile
         self.register = register
         self.exclude = exclude or set()
-        self.errors = OrderedDict()
+        self.errors_entry = OrderedDict()
+        self.errors_file = []
+
+    def _run_entry_validators(self):
+        validators = tuple((code, v) for code, v in self.register.entry_validators.items() if code not in self.exclude)
+        for entry in polib.pofile(self.pofile):
+            for code, callback in validators:
+                if not callback(entry):
+                    entry_errors = self.errors_entry.setdefault(entry, [])
+                    entry_errors.append(code)
+
+    def _run_file_validators(self):
+        validators = tuple((code, v) for code, v in self.register.file_validators.items() if code not in self.exclude)
+        pofile = polib.pofile(self.pofile)
+        for code, callback in validators:
+            if not callback(pofile):
+                self.errors_file.append(code)
 
     def run_validators(self):
         """
         Runs the checks
         """
-        entry_validators = tuple((code, v) for code, v in self.register.entry_validators.items()
-                                 if code not in self.exclude)
-        for entry in polib.pofile(self.pofile):
-            for code, callback in entry_validators:
-                if not callback(entry):
-                    entry_errors = self.errors.setdefault(entry, [])
-                    entry_errors.append(code)
+        self._run_entry_validators()
+        self._run_file_validators()
 
 
 ################################################################################
@@ -183,16 +194,21 @@ def main(args=None, output=sys.stdout):
     for filename in options.filenames:
         linter = Linter(filename, exclude=exclude)
         linter.run_validators()
-        if linter.errors:
+        if linter.errors_entry or linter.errors_file:
             exit_code = 1
         error_defs = REGISTER.errors
-        for entry, errors in linter.errors.items():
+        # Print entry errors
+        for entry, errors in linter.errors_entry.items():
             for error in errors:
                 msg_data = {'filename': filename, 'line': entry.linenum, 'error': error,
                             'description': error_defs[error]}
                 output.write(MSG_FORMAT % msg_data)
             if options.show_msg:
                 output.write(str(entry))
+        # Print file errors
+        for error in linter.errors_file:
+            msg_data = {'filename': filename, 'line': 1, 'error': error, 'description': error_defs[error]}
+            output.write(MSG_FORMAT % msg_data)
     sys.exit(exit_code)
 
 
