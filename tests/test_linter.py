@@ -24,8 +24,7 @@ class TestLinter(unittest.TestCase):
 
         linter.run_validators()
 
-        self.assertEqual(linter.errors_entry, {})
-        self.assertEqual(linter.errors_file, [])
+        self.assertEqual(linter.errors, {})
 
     def test_no_validators(self):
         reg = ValidatorRegister()
@@ -33,10 +32,9 @@ class TestLinter(unittest.TestCase):
 
         linter.run_validators()
 
-        self.assertEqual(linter.errors_entry, {})
-        self.assertEqual(linter.errors_file, [])
+        self.assertEqual(linter.errors, {})
 
-    def test_error_entry(self):
+    def test_run_validators(self):
         reg = ValidatorRegister()
         reg.register_entry(invalidator, 'error', 'entry in invalid')
         linter = Linter(os.path.join(os.path.dirname(__file__), 'data', 'simple_valid.po'), register=reg)
@@ -44,19 +42,7 @@ class TestLinter(unittest.TestCase):
         linter.run_validators()
 
         entry = POEntry(msgid="Source", msgstr="Translation")
-        self.assertEqual(linter.errors_entry, {entry: ['error']})
-        self.assertEqual(linter.errors_file, [])
-
-    def test_error_file(self):
-        reg = ValidatorRegister()
-        reg.register_entry(invalidator, 'error', 'entry in invalid')
-        linter = Linter(os.path.join(os.path.dirname(__file__), 'data', 'simple_valid.po'), register=reg)
-
-        linter.run_validators()
-
-        entry = POEntry(msgid="Source", msgstr="Translation")
-        self.assertEqual(linter.errors_entry, {entry: ['error']})
-        self.assertEqual(linter.errors_file, [])
+        self.assertEqual(linter.errors, {entry: ['error']})
 
     def test_exclude(self):
         reg = ValidatorRegister()
@@ -66,5 +52,4 @@ class TestLinter(unittest.TestCase):
 
         linter.run_validators()
 
-        self.assertEqual(linter.errors_entry, {})
-        self.assertEqual(linter.errors_file, [])
+        self.assertEqual(linter.errors, {})
