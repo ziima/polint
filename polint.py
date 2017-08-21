@@ -7,7 +7,6 @@ from collections import OrderedDict
 
 import polib
 
-
 __version__ = '0.1'
 
 
@@ -111,24 +110,32 @@ class Linter(object):
 def fuzzy_validator(entry):
     """Checks if entry is fuzzy"""
     return 'fuzzy' not in entry.flags
+
+
 REGISTER.register_entry(fuzzy_validator, 'fuzzy', 'translation is fuzzy')
 
 
 def obsolete_validator(entry):
     """Checks if entry is obsolete"""
     return not entry.obsolete
+
+
 REGISTER.register_entry(obsolete_validator, 'obsolete', 'entry is obsolete')
 
 
 def untranslated_validator(entry):
     """Checks if entry is translated"""
     return entry.translated()
+
+
 REGISTER.register_entry(untranslated_validator, 'untranslated', 'translation is missing')
 
 
 def no_location_validator(entry):
     """Checks if entry has no location data"""
     return not entry.occurrences
+
+
 REGISTER.register_entry(no_location_validator, 'location', 'entry contains location')
 
 
