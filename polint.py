@@ -8,7 +8,7 @@ from collections import OrderedDict
 import polib
 
 
-__version__ = 'devel'
+__version__ = '0.1'
 
 
 ################################################################################
