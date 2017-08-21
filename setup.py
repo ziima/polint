@@ -1,11 +1,8 @@
 # -*- coding: utf-8 -*-
 from setuptools import setup
 
-from polint import __version__
-
-
 setup(name='polint',
-      version=__version__,
+      version='0.1',
       description='Linter for gettext PO files',
       author='Vlastimil Zíma',
       author_email='vlastimil.zima@gmail.com',
