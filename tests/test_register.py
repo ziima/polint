@@ -1,20 +1,17 @@
-"""
-Test validator register
-"""
+"""Test validator register."""
 import unittest
 
 from polint import ValidatorRegister
 
 
 def test_callback(dummy):
-    """Does nothing, used for ValidationRegister"""
+    """Do nothing, used for ValidationRegister."""
     raise NotImplementedError
 
 
 class TestValidatorRegister(unittest.TestCase):
-    """
-    Test `ValidatorRegister`.
-    """
+    """Test `ValidatorRegister`."""
+
     def test_empty_register(self):
         reg = ValidatorRegister()
         self.assertEqual(reg.errors, {})

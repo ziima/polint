@@ -1,6 +1,4 @@
-"""
-Test command calls.
-"""
+"""Test command calls."""
 import os
 import unittest
 
@@ -15,9 +13,8 @@ except ImportError:
 
 
 class TestMain(unittest.TestCase):
-    """
-    Test `main` function
-    """
+    """Test `main` function."""
+
     def test_empty(self):
         with self.assertRaises(SystemExit) as context:
             main([os.path.join(os.path.dirname(__file__), 'data', 'empty.po')])

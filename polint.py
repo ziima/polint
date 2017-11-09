@@ -1,6 +1,4 @@
-"""
-polint - Linter for gettext PO files
-"""
+"""polint - Linter for gettext PO files."""
 import argparse
 import sys
 from collections import OrderedDict
@@ -13,10 +11,10 @@ __version__ = '0.1'
 ################################################################################
 # Validators register
 class ValidatorRegister(object):
-    """
-    Register of validators
-    """
+    """Validators register."""
+
     def __init__(self):
+        """Initialize the register. Take no parameters."""
         # Dictionary of (code, description) pairs
         self._errors = OrderedDict()
         # Dictionary of (code, callback) pairs
@@ -24,21 +22,16 @@ class ValidatorRegister(object):
 
     @property
     def errors(self):
-        """
-        Dictionary of (error_code, error_description) pairs.
-        """
+        """Return dictionary of (error_code, error_description) pairs."""
         return self._errors.copy()
 
     @property
     def validators(self):
-        """
-        Dictionary of (error_code, callback) pairs.
-        """
+        """Return dictionary of (error_code, callback) pairs."""
         return self._validators.copy()
 
     def register(self, callback, error_code, error_description):
-        """
-        Registers validator.
+        """Register validator.
 
         @param callback: Function which performs validation.
         @type callback: function
@@ -60,17 +53,16 @@ REGISTER = ValidatorRegister()
 ################################################################################
 # Linter
 class Linter(object):
-    """
-    Linter performs the actual validation of the PO files
+    """Linter performs the actual validation of the PO files.
 
     If opens the pofile and runs all registered validators on each entry.
 
     @ivar errors: Dictionary of (entry, errors) pairs found in validation
     @type errors: {POEntry: [text, text, ...], ...}
     """
+
     def __init__(self, pofile, exclude=None, register=REGISTER):
-        """
-        Initializes Linter
+        """Initialize Linter.
 
         @param pofile: Filename or a file to be validated
         @type pofile: text or file
@@ -85,9 +77,7 @@ class Linter(object):
         self.errors = OrderedDict()
 
     def run_validators(self):
-        """
-        Runs the checks
-        """
+        """Run the checks."""
         validators = tuple((code, v) for code, v in self.register.validators.items() if code not in self.exclude)
         for entry in polib.pofile(self.pofile):
             for code, callback in validators:
@@ -101,7 +91,7 @@ class Linter(object):
 #
 # All validators has to expect POEntry as their first argument and return whether the validation passed.
 def fuzzy_validator(entry):
-    """Checks if entry is fuzzy"""
+    """Check if entry is fuzzy."""
     return 'fuzzy' not in entry.flags
 
 
@@ -109,7 +99,7 @@ REGISTER.register(fuzzy_validator, 'fuzzy', 'translation is fuzzy')
 
 
 def obsolete_validator(entry):
-    """Checks if entry is obsolete"""
+    """Check if entry is obsolete."""
     return not entry.obsolete
 
 
@@ -117,7 +107,7 @@ REGISTER.register(obsolete_validator, 'obsolete', 'entry is obsolete')
 
 
 def untranslated_validator(entry):
-    """Checks if entry is translated"""
+    """Check if entry is translated."""
     return entry.translated()
 
 
@@ -125,7 +115,7 @@ REGISTER.register(untranslated_validator, 'untranslated', 'translation is missin
 
 
 def no_location_validator(entry):
-    """Checks if entry has no location data"""
+    """Check if entry has no location data."""
     return not entry.occurrences
 
 
@@ -135,6 +125,7 @@ REGISTER.register(no_location_validator, 'location', 'entry contains location')
 ################################################################################
 # Polint command
 def get_parser():
+    """Return polint parser."""
     parser = argparse.ArgumentParser(description="Validates PO files")
     parser.add_argument('filenames', metavar='file', nargs='+', help='PO file to be linted')
     parser.add_argument('--show-msg', action="store_true", help="Print the message for each error")
@@ -146,6 +137,7 @@ MSG_FORMAT = '%(filename)s:%(line)s: [%(error)s] %(description)s\n'
 
 
 def main(args=None, output=sys.stdout):
+    """Run the polint."""
     parser = get_parser()
     options = parser.parse_args(args)
 

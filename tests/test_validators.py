@@ -1,6 +1,4 @@
-"""
-Tests for individual validators.
-"""
+"""Tests for individual validators."""
 import unittest
 
 from polib import POEntry
@@ -9,9 +7,8 @@ from polint import fuzzy_validator, no_location_validator, obsolete_validator, u
 
 
 class TestFuzzyValidator(unittest.TestCase):
-    """
-    Test `fuzzy_validator`.
-    """
+    """Test `fuzzy_validator`."""
+
     def test_pass(self):
         entry = POEntry(msgid="Source", msgstr="Translation")
         self.assertTrue(fuzzy_validator(entry))
@@ -26,9 +23,8 @@ class TestFuzzyValidator(unittest.TestCase):
 
 
 class TestObsoleteValidator(unittest.TestCase):
-    """
-    Test `obsolete_validator`.
-    """
+    """Test `obsolete_validator`."""
+
     def test_pass(self):
         entry = POEntry(msgid="Source", msgstr="Translation")
         self.assertTrue(obsolete_validator(entry))
@@ -39,9 +35,8 @@ class TestObsoleteValidator(unittest.TestCase):
 
 
 class TestUntranslatedValidator(unittest.TestCase):
-    """
-    Test `untranslated_validator`.
-    """
+    """Test `untranslated_validator`."""
+
     def test_pass(self):
         entry = POEntry(msgid="Source", msgstr="Translation")
         self.assertTrue(untranslated_validator(entry))
@@ -62,9 +57,8 @@ class TestUntranslatedValidator(unittest.TestCase):
 
 
 class TestNoLocationValidator(unittest.TestCase):
-    """
-    Test `no_location_validator`.
-    """
+    """Test `no_location_validator`."""
+
     def test_pass(self):
         entry = POEntry(msgid="Source", msgstr="Translation")
         self.assertTrue(no_location_validator(entry))

@@ -17,3 +17,6 @@ check-isort:
 
 check-flake8:
 	flake8 --format=pylint polint.py tests
+
+check-doc:
+	pydocstyle polint.py
