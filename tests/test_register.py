@@ -18,16 +18,16 @@ class TestValidatorRegister(unittest.TestCase):
     def test_empty_register(self):
         reg = ValidatorRegister()
         self.assertEqual(reg.errors, {})
-        self.assertEqual(reg.entry_validators, {})
+        self.assertEqual(reg.validators, {})
 
     def test_register(self):
         reg = ValidatorRegister()
-        reg.register_entry(test_callback, 'error', 'entry is invalid')
+        reg.register(test_callback, 'error', 'entry is invalid')
         self.assertEqual(reg.errors, {'error': 'entry is invalid'})
-        self.assertEqual(reg.entry_validators, {'error': test_callback})
+        self.assertEqual(reg.validators, {'error': test_callback})
 
     def test_already_registered(self):
         reg = ValidatorRegister()
-        reg.register_entry(test_callback, 'error', 'entry is invalid')
+        reg.register(test_callback, 'error', 'entry is invalid')
         with self.assertRaises(ValueError):
-            reg.register_entry(test_callback, 'error', 'entry is broken')
+            reg.register(test_callback, 'error', 'entry is broken')

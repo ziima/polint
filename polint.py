@@ -20,31 +20,25 @@ class ValidatorRegister(object):
         # Dictionary of (code, description) pairs
         self._errors = OrderedDict()
         # Dictionary of (code, callback) pairs
-        self._entry_validators = OrderedDict()
+        self._validators = OrderedDict()
 
     @property
     def errors(self):
         """
-        Returns registered errors.
-
-        @return: Dictionary of (error_code, error_description) pairs.
+        Dictionary of (error_code, error_description) pairs.
         """
         return self._errors.copy()
 
     @property
-    def entry_validators(self):
+    def validators(self):
         """
-        Returns registered entry validators.
-
-        @return: Dictionary of (error_code, callback) pairs.
+        Dictionary of (error_code, callback) pairs.
         """
-        return self._entry_validators.copy()
+        return self._validators.copy()
 
-    def register_entry(self, callback, error_code, error_description):
+    def register(self, callback, error_code, error_description):
         """
-        Registers entry validator.
-
-        Callback must match signature (POEntry entry).
+        Registers validator.
 
         @param callback: Function which performs validation.
         @type callback: function
@@ -54,10 +48,10 @@ class ValidatorRegister(object):
         @type error_description: text
         @raises ValueError: If `error_code` is already registered.
         """
-        if error_code in self._errors:
+        if error_code in self._validators:
             raise ValueError('Validator for %s is already registered.' % error_code)
         self._errors[error_code] = error_description
-        self._entry_validators[error_code] = callback
+        self._validators[error_code] = callback
 
 
 REGISTER = ValidatorRegister()
@@ -94,10 +88,9 @@ class Linter(object):
         """
         Runs the checks
         """
-        entry_validators = tuple((code, v) for code, v in self.register.entry_validators.items()
-                                 if code not in self.exclude)
+        validators = tuple((code, v) for code, v in self.register.validators.items() if code not in self.exclude)
         for entry in polib.pofile(self.pofile):
-            for code, callback in entry_validators:
+            for code, callback in validators:
                 if not callback(entry):
                     entry_errors = self.errors.setdefault(entry, [])
                     entry_errors.append(code)
@@ -112,7 +105,7 @@ def fuzzy_validator(entry):
     return 'fuzzy' not in entry.flags
 
 
-REGISTER.register_entry(fuzzy_validator, 'fuzzy', 'translation is fuzzy')
+REGISTER.register(fuzzy_validator, 'fuzzy', 'translation is fuzzy')
 
 
 def obsolete_validator(entry):
@@ -120,7 +113,7 @@ def obsolete_validator(entry):
     return not entry.obsolete
 
 
-REGISTER.register_entry(obsolete_validator, 'obsolete', 'entry is obsolete')
+REGISTER.register(obsolete_validator, 'obsolete', 'entry is obsolete')
 
 
 def untranslated_validator(entry):
@@ -128,7 +121,7 @@ def untranslated_validator(entry):
     return entry.translated()
 
 
-REGISTER.register_entry(untranslated_validator, 'untranslated', 'translation is missing')
+REGISTER.register(untranslated_validator, 'untranslated', 'translation is missing')
 
 
 def no_location_validator(entry):
@@ -136,7 +129,7 @@ def no_location_validator(entry):
     return not entry.occurrences
 
 
-REGISTER.register_entry(no_location_validator, 'location', 'entry contains location')
+REGISTER.register(no_location_validator, 'location', 'entry contains location')
 
 
 ################################################################################
