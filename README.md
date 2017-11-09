@@ -16,3 +16,4 @@ To print complete usage use `--help` option.
  * `obsolete` - Entry is obsolete
  * `untranslated` - Translation is missing. That includes `fuzzy` or `obsolete`.
  * `location` - Entry contains location data
+ * `unsorted` - Entry is not properly sorted

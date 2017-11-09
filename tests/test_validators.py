@@ -3,7 +3,8 @@ import unittest
 
 from polib import POEntry
 
-from polint import Status, fuzzy_validator, no_location_validator, obsolete_validator, untranslated_validator
+from polint import (Status, fuzzy_validator, no_location_validator, obsolete_validator, sort_validator,
+                    untranslated_validator)
 
 
 class TestFuzzyValidator(unittest.TestCase):
@@ -88,3 +89,29 @@ class TestNoLocationValidator(unittest.TestCase):
         status = Status()
         status.step(entry)
         self.assertFalse(no_location_validator(status))
+
+
+class TestSortValidator(unittest.TestCase):
+    """Test `sort_validator`."""
+
+    def test_first_entry(self):
+        entry = POEntry(msgid="Source", msgstr="Translation")
+        status = Status()
+        status.step(entry)
+        self.assertTrue(sort_validator(status))
+
+    def test_sorted(self):
+        first = POEntry(msgid="First", msgstr="Translation")
+        second = POEntry(msgid="Second", msgstr="Translation")
+        status = Status()
+        status.step(first)
+        status.step(second)
+        self.assertTrue(sort_validator(status))
+
+    def test_unsorted(self):
+        first = POEntry(msgid="Second", msgstr="Translation")
+        second = POEntry(msgid="First", msgstr="Translation")
+        status = Status()
+        status.step(first)
+        status.step(second)
+        self.assertFalse(sort_validator(status))

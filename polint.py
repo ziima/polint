@@ -145,6 +145,17 @@ def no_location_validator(status):
 REGISTER.register(no_location_validator, 'location', 'entry contains location')
 
 
+def sort_validator(status):
+    """Check if the entry is properly sorted."""
+    if status.previous is None:
+        # First entry is always correctly sorted.
+        return True
+    return status.previous.msgid < status.entry.msgid
+
+
+REGISTER.register(sort_validator, 'unsorted', 'entry is not sorted')
+
+
 ################################################################################
 # Polint command
 def get_parser():

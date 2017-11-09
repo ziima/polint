@@ -53,7 +53,7 @@ class TestMain(unittest.TestCase):
         with self.assertRaises(SystemExit) as context:
             main([os.path.join(os.path.dirname(__file__), 'data', 'invalid.po'), '--show-msg'], output=output)
         self.assertEqual(context.exception.code, 1)
-        location_output = 'invalid.po:23: [location] entry contains location\n' \
+        location_output = 'invalid.po:23: [unsorted] entry is not sorted\n' \
                           '#: source.file:42\n' \
                           'msgid "Location"\n' \
                           'msgstr "Location"\n'
@@ -99,6 +99,6 @@ class TestMain(unittest.TestCase):
         output = StringIO()
         with self.assertRaises(SystemExit) as context:
             cmd = [os.path.join(os.path.dirname(__file__), 'data', 'invalid.po'), '--ignore',
-                   'untranslated,location,fuzzy,obsolete']
+                   'untranslated,location,fuzzy,obsolete,unsorted']
             main(cmd, output=output)
         self.assertEqual(context.exception.code, 0)
