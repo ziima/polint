@@ -100,10 +100,12 @@ class Linter(object):
     def run_validators(self):
         """Run the checks."""
         validators = tuple((code, v) for code, v in self.register.validators.items() if code not in self.exclude)
+        status = Status()
         for entry in polib.pofile(self.pofile):
+            status.step(entry)
             for code, callback in validators:
-                if not callback(entry):
-                    entry_errors = self.errors.setdefault(entry, [])
+                if not callback(status):
+                    entry_errors = self.errors.setdefault(status.entry, [])
                     entry_errors.append(code)
 
 
@@ -111,33 +113,33 @@ class Linter(object):
 # Validators
 #
 # All validators has to expect POEntry as their first argument and return whether the validation passed.
-def fuzzy_validator(entry):
-    """Check if entry is fuzzy."""
-    return 'fuzzy' not in entry.flags
+def fuzzy_validator(status):
+    """Check if current entry is fuzzy."""
+    return 'fuzzy' not in status.entry.flags
 
 
 REGISTER.register(fuzzy_validator, 'fuzzy', 'translation is fuzzy')
 
 
-def obsolete_validator(entry):
-    """Check if entry is obsolete."""
-    return not entry.obsolete
+def obsolete_validator(status):
+    """Check if current entry is obsolete."""
+    return not status.entry.obsolete
 
 
 REGISTER.register(obsolete_validator, 'obsolete', 'entry is obsolete')
 
 
-def untranslated_validator(entry):
-    """Check if entry is translated."""
-    return entry.translated()
+def untranslated_validator(status):
+    """Check if current entry is translated."""
+    return status.entry.translated()
 
 
 REGISTER.register(untranslated_validator, 'untranslated', 'translation is missing')
 
 
-def no_location_validator(entry):
-    """Check if entry has no location data."""
-    return not entry.occurrences
+def no_location_validator(status):
+    """Check if current entry has no location data."""
+    return not status.entry.occurrences
 
 
 REGISTER.register(no_location_validator, 'location', 'entry contains location')

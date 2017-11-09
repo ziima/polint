@@ -3,7 +3,7 @@ import unittest
 
 from polib import POEntry
 
-from polint import fuzzy_validator, no_location_validator, obsolete_validator, untranslated_validator
+from polint import Status, fuzzy_validator, no_location_validator, obsolete_validator, untranslated_validator
 
 
 class TestFuzzyValidator(unittest.TestCase):
@@ -11,15 +11,21 @@ class TestFuzzyValidator(unittest.TestCase):
 
     def test_pass(self):
         entry = POEntry(msgid="Source", msgstr="Translation")
-        self.assertTrue(fuzzy_validator(entry))
+        status = Status()
+        status.step(entry)
+        self.assertTrue(fuzzy_validator(status))
 
     def test_fail_fuzzy(self):
         entry = POEntry(msgid="Source", msgstr="Translation", flags=['fuzzy'])
-        self.assertFalse(fuzzy_validator(entry))
+        status = Status()
+        status.step(entry)
+        self.assertFalse(fuzzy_validator(status))
 
     def test_fail_multiple_flags(self):
         entry = POEntry(msgid="Source", msgstr="Translation", flags=['another', 'fuzzy', 'flag'])
-        self.assertFalse(fuzzy_validator(entry))
+        status = Status()
+        status.step(entry)
+        self.assertFalse(fuzzy_validator(status))
 
 
 class TestObsoleteValidator(unittest.TestCase):
@@ -27,11 +33,15 @@ class TestObsoleteValidator(unittest.TestCase):
 
     def test_pass(self):
         entry = POEntry(msgid="Source", msgstr="Translation")
-        self.assertTrue(obsolete_validator(entry))
+        status = Status()
+        status.step(entry)
+        self.assertTrue(obsolete_validator(status))
 
     def test_fail(self):
         entry = POEntry(msgid="Source", msgstr="Translation", obsolete=True)
-        self.assertFalse(obsolete_validator(entry))
+        status = Status()
+        status.step(entry)
+        self.assertFalse(obsolete_validator(status))
 
 
 class TestUntranslatedValidator(unittest.TestCase):
@@ -39,21 +49,29 @@ class TestUntranslatedValidator(unittest.TestCase):
 
     def test_pass(self):
         entry = POEntry(msgid="Source", msgstr="Translation")
-        self.assertTrue(untranslated_validator(entry))
+        status = Status()
+        status.step(entry)
+        self.assertTrue(untranslated_validator(status))
 
     def test_fail_missing(self):
         entry = POEntry(msgid="Source", msgstr="")
-        self.assertFalse(untranslated_validator(entry))
+        status = Status()
+        status.step(entry)
+        self.assertFalse(untranslated_validator(status))
 
     def test_fail_fuzzy(self):
         # Fuzzy translations are considered untranslated
         entry = POEntry(msgid="Source", msgstr="Translation", flags=['fuzzy'])
-        self.assertFalse(untranslated_validator(entry))
+        status = Status()
+        status.step(entry)
+        self.assertFalse(untranslated_validator(status))
 
     def test_fail_obsolete(self):
         # Obsolete translations are considered untranslated
         entry = POEntry(msgid="Source", msgstr="Translation", obsolete=True)
-        self.assertFalse(untranslated_validator(entry))
+        status = Status()
+        status.step(entry)
+        self.assertFalse(untranslated_validator(status))
 
 
 class TestNoLocationValidator(unittest.TestCase):
@@ -61,8 +79,12 @@ class TestNoLocationValidator(unittest.TestCase):
 
     def test_pass(self):
         entry = POEntry(msgid="Source", msgstr="Translation")
-        self.assertTrue(no_location_validator(entry))
+        status = Status()
+        status.step(entry)
+        self.assertTrue(no_location_validator(status))
 
     def test_fail(self):
         entry = POEntry(msgid="Source", msgstr="Translation", occurrences=[('source.py', 1)])
-        self.assertFalse(no_location_validator(entry))
+        status = Status()
+        status.step(entry)
+        self.assertFalse(no_location_validator(status))
