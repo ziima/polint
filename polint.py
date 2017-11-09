@@ -52,6 +52,27 @@ REGISTER = ValidatorRegister()
 
 ################################################################################
 # Linter
+class Status(object):
+    """Linting process status.
+
+    @ivar entry: Currently processed entry.
+    @ivar previous: Previously processed entry.
+    """
+
+    def __init__(self):
+        """Initialize the register. Take no parameters."""
+        self.entry = None
+        self.previous = None
+
+    def step(self, entry):
+        """Move to the next entry.
+
+        @param entry: The next entry.
+        """
+        self.previous = self.entry
+        self.entry = entry
+
+
 class Linter(object):
     """Linter performs the actual validation of the PO files.
 

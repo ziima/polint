@@ -2,14 +2,39 @@
 import os
 import unittest
 
+from mock import sentinel
 from polib import POEntry
 
-from polint import Linter, ValidatorRegister
+from polint import Linter, Status, ValidatorRegister
 
 
 def invalidator(dummy):
     """Return failure in every case."""
     return False
+
+
+class TestStatus(unittest.TestCase):
+    """Test `Status` class."""
+
+    def test_new(self):
+        status = Status()
+        self.assertIsNone(status.entry)
+        self.assertIsNone(status.previous)
+
+    def test_first_step(self):
+        status = Status()
+        status.step(sentinel.first)
+
+        self.assertEqual(status.entry, sentinel.first)
+        self.assertIsNone(status.previous)
+
+    def test_next_step(self):
+        status = Status()
+        status.step(sentinel.first)
+        status.step(sentinel.second)
+
+        self.assertEqual(status.entry, sentinel.second)
+        self.assertEqual(status.previous, sentinel.first)
 
 
 class TestLinter(unittest.TestCase):
