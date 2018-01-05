@@ -151,7 +151,9 @@ def sort_validator(status):
         # First entry is always correctly sorted.
         return True
     if status.previous.msgid == status.entry.msgid:
-        return status.previous.msgctxt < status.entry.msgctxt
+        previous_msgctx = status.previous.msgctxt or ''
+        entry_msgctxt = status.entry.msgctxt or ''
+        return previous_msgctx < entry_msgctxt
     else:
         return status.previous.msgid < status.entry.msgid
 
