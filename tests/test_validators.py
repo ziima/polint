@@ -115,3 +115,19 @@ class TestSortValidator(unittest.TestCase):
         status.step(first)
         status.step(second)
         self.assertFalse(sort_validator(status))
+
+    def test_msgctxt_none(self):
+        first = POEntry(msgid="First", msgstr="Translation")
+        second = POEntry(msgid="First", msgstr="Trans.", msgctxt="abbrev.")
+        status = Status()
+        status.step(first)
+        status.step(second)
+        self.assertTrue(sort_validator(status))
+
+    def test_msgctxt_both(self):
+        first = POEntry(msgid="First", msgstr="Trans.", msgctxt="abbrev.")
+        second = POEntry(msgid="First", msgstr="Translation", msgctxt="long")
+        status = Status()
+        status.step(first)
+        status.step(second)
+        self.assertTrue(sort_validator(status))

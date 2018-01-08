@@ -150,7 +150,12 @@ def sort_validator(status):
     if status.previous is None:
         # First entry is always correctly sorted.
         return True
-    return status.previous.msgid < status.entry.msgid
+    if status.previous.msgid == status.entry.msgid:
+        previous_msgctx = status.previous.msgctxt or ''
+        entry_msgctxt = status.entry.msgctxt or ''
+        return previous_msgctx < entry_msgctxt
+    else:
+        return status.previous.msgid < status.entry.msgid
 
 
 REGISTER.register(sort_validator, 'unsorted', 'entry is not sorted')
