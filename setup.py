@@ -2,7 +2,7 @@
 from setuptools import setup
 
 setup(name='polint',
-      version='0.1',
+      version='0.2',
       description='Linter for gettext PO files',
       author='Vlastimil Zíma',
       author_email='vlastimil.zima@gmail.com',
