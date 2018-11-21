@@ -1,3 +1,11 @@
-*.pyc
+*.py[co]
+__pycache__
+
+# Tests
 /htmlcov
 /.coverage
+/.tox
+
+# Distribute
+/polint.egg-info
+/dist

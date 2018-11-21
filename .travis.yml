@@ -2,20 +2,12 @@ language: python
 sudo: false
 python:
   - "2.7"
-  - "3.4"
   - "3.5"
   - "3.6"
-  - "3.7-dev"
+
 install:
-  - pip install -r requirements.txt
-  - pip install -r requirements-dev.txt
-  - pip install isort
-  - pip install flake8
-  - pip install pydocstyle
-  - pip install -e .
-  - pip list
+  # tox-travis automatically splits the jobs
+  - pip install tox-travis
+
 script:
-  - make check-isort
-  - make check-flake8
-  - make check-doc
-  - python setup.py test
+  - tox
