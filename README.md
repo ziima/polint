@@ -6,10 +6,11 @@
 
 ## Usage ##
 ```
-polint.py [options] file [file ...]
+polint.py [options] <file>...
+polint.py -h | --help
+polint.py --version
 ```
 To print complete usage use `--help` option.
-
 
 ## Errors ##
  * `fuzzy` - Translation is fuzzy
