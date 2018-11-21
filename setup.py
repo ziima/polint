@@ -11,6 +11,6 @@ setup(name='polint',
       author_email='vlastimil.zima@gmail.com',
       py_modules=['polint'],
       entry_points={'console_scripts': ['polint = polint:main']},
-      install_requires=['polib'],
+      install_requires=['docopt', 'polib'],
       extras_require=EXTRAS_REQUIRE,
       test_suite='tests')

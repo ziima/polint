@@ -1,9 +1,24 @@
-"""polint - Linter for gettext PO files."""
-import argparse
+"""
+Validate gettext PO files.
+
+Usage: polint.py [options] <file>...
+       polint.py -h | --help
+       polint.py --version
+
+Positional arguments:
+  file                  PO file to be linted
+
+Options:
+  -h, --help            show this help message and exit
+  --version             show program's version number and exit
+  --show-msg            print the message for each error
+  -i, --ignore=IGNORE   skip errors (e.g. untranslated,location)
+"""
 import sys
 from collections import OrderedDict
 
 import polib
+from docopt import docopt
 
 __version__ = '0.2'
 
@@ -163,26 +178,23 @@ REGISTER.register(sort_validator, 'unsorted', 'entry is not sorted')
 
 ################################################################################
 # Polint command
-def get_parser():
-    """Return polint parser."""
-    parser = argparse.ArgumentParser(description="Validates PO files")
-    parser.add_argument('filenames', metavar='file', nargs='+', help='PO file to be linted')
-    parser.add_argument('--show-msg', action="store_true", help="Print the message for each error")
-    parser.add_argument('--ignore', default='', help="skip errors (e.g. untranslated,location)")
-    return parser
-
-
 MSG_FORMAT = '%(filename)s:%(line)s: [%(error)s] %(description)s\n'
 
 
 def main(args=None, output=sys.stdout):
-    """Run the polint."""
-    parser = get_parser()
-    options = parser.parse_args(args)
+    """Run the polint.
+
+    @param args: Command line arguments. Mainly for tests.
+    @param output: Standard output file object. Mainly for tests.
+    """
+    options = docopt(__doc__, args, version=__version__)
 
     exit_code = 0
-    exclude = {i for i in options.ignore.split(',')}
-    for filename in options.filenames:
+    if options.get('--ignore'):
+        exclude = {i for i in options['--ignore'].split(',')}
+    else:
+        exclude = None
+    for filename in options['<file>']:
         linter = Linter(filename, exclude=exclude)
         linter.run_validators()
         if linter.errors:
@@ -193,7 +205,7 @@ def main(args=None, output=sys.stdout):
                 msg_data = {'filename': filename, 'line': entry.linenum, 'error': error,
                             'description': error_defs[error]}
                 output.write(MSG_FORMAT % msg_data)
-            if options.show_msg:
+            if options['--show-msg']:
                 output.write(str(entry))
     sys.exit(exit_code)
 
