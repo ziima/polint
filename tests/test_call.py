@@ -2,7 +2,7 @@
 import os
 import unittest
 
-from polint import main
+from polint import get_files, main
 
 try:
     # Python 2
@@ -10,6 +10,30 @@ try:
 except ImportError:
     # Python 3
     from io import StringIO
+
+
+class TestGetFiles(unittest.TestCase):
+    """Test `get_files` function."""
+
+    def test_single_file(self):
+        single_file = os.path.join(os.path.dirname(__file__), 'data', 'empty.po')
+        files = get_files([single_file])
+        self.assertEqual(list(files), [single_file])
+
+    def test_directory(self):
+        dirname = os.path.join(os.path.dirname(__file__), 'data')
+        files = get_files([dirname])
+        self.assertEqual(
+            list(files),
+            [os.path.join(dirname, f) for f in ('empty.po', 'header_only.po', 'invalid.po', 'simple_valid.po')])
+
+    def test_directory_filter(self):
+        # Test `get_files` returns only gettext files when run on `tests` directory, i.e. it ignores .py files.
+        dirname = os.path.dirname(__file__)
+        files = get_files([dirname])
+        self.assertEqual(
+            list(files),
+            [os.path.join(dirname, 'data', f) for f in ('empty.po', 'header_only.po', 'invalid.po', 'simple_valid.po')])
 
 
 class TestMain(unittest.TestCase):
