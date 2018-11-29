@@ -4,6 +4,7 @@ Changelog
 
 0.3
 ===
+ * Use ``docopt`` for argument parsing.
  * Recursively search directories for ``.po`` files.
 
 0.2

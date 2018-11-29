@@ -22,7 +22,7 @@ from collections import OrderedDict
 import polib
 from docopt import docopt
 
-__version__ = '0.2'
+__version__ = '0.3'
 
 
 ################################################################################
