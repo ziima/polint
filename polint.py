@@ -1,12 +1,12 @@
 """
 Validate gettext PO files.
 
-Usage: polint.py [options] <file>...
+Usage: polint.py [options] <path>...
        polint.py -h | --help
        polint.py --version
 
 Positional arguments:
-  file                  PO file to be linted
+  path                  PO file or directory to be linted
 
 Options:
   -h, --help            show this help message and exit
@@ -14,6 +14,8 @@ Options:
   --show-msg            print the message for each error
   -i, --ignore=IGNORE   skip errors (e.g. untranslated,location)
 """
+import fnmatch
+import os
 import sys
 from collections import OrderedDict
 
@@ -181,6 +183,20 @@ REGISTER.register(sort_validator, 'unsorted', 'entry is not sorted')
 MSG_FORMAT = '%(filename)s:%(line)s: [%(error)s] %(description)s\n'
 
 
+def get_files(paths):
+    """Return only paths to files to be linted.
+
+    @param paths: List of files or directories to be linted.
+    """
+    for path in paths:
+        if os.path.isdir(path):
+            for root, dirs, files in os.walk(path):
+                for filename in fnmatch.filter(files, '*.po'):
+                    yield os.path.join(root, filename)
+        else:
+            yield path
+
+
 def main(args=None, output=sys.stdout):
     """Run the polint.
 
@@ -194,7 +210,7 @@ def main(args=None, output=sys.stdout):
         exclude = {i for i in options['--ignore'].split(',')}
     else:
         exclude = None
-    for filename in options['<file>']:
+    for filename in get_files(options['<path>']):
         linter = Linter(filename, exclude=exclude)
         linter.run_validators()
         if linter.errors:

@@ -6,7 +6,7 @@
 
 ## Usage ##
 ```
-polint.py [options] <file>...
+polint.py [options] <path>...
 polint.py -h | --help
 polint.py --version
 ```
