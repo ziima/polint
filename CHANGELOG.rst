@@ -4,17 +4,17 @@ Changelog
 
 0.4
 ===
- * Fix installation in environment with C locales.
+* Fix installation in environment with C locales.
 
 0.3
 ===
- * Use ``docopt`` for argument parsing.
- * Recursively search directories for ``.po`` files.
+* Use ``docopt`` for argument parsing.
+* Recursively search directories for ``.po`` files.
 
 0.2
 ===
- * Add sort validator
+* Add sort validator
 
 0.1
 ===
- * Initial version
+* Initial version
