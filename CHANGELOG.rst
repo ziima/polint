@@ -2,6 +2,10 @@
 Changelog
 ---------
 
+0.4
+===
+ * Fix installation in environment with C locales.
+
 0.3
 ===
  * Use ``docopt`` for argument parsing.
