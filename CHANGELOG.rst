@@ -2,6 +2,11 @@
 Changelog
 ---------
 
+0.5
+===
+* Fix installation under new setuptools
+* Remove support for old python versions
+
 0.4
 ===
 * Fix installation in environment with C locales.
